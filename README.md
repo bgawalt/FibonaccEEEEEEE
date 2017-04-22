@@ -7,4 +7,6 @@ per day. Except numerals aren't allowed, only "e" or "E" (and punctuation).  So
 I'm gonna use those two characters as binary digits.  "e" is zero, cuz it's the
 small one.
 
+Check it out: [@_e_e_ee_eee_eeeee_eeeeeeee@dolphin.town](https://dolphin.town/@_e_e_ee_eee_eeeee_eeeeeeee)
+
 Thanks much to Lorenz "[@halcy](https://twitter.com/halcy)" Diener for [Mastodon.py!](https://github.com/halcy/Mastodon.py)
