@@ -1,6 +1,7 @@
 
 import math
 import sqlite3
+import sys
 
 from mastodon import Mastodon
 
@@ -54,11 +55,60 @@ def PostToDolphinTown(eeeee):
 
 
 def CreateDatabaseAndKickStartSequence(db_name):
-    pass
+    conn = sqlite3.connect(db_name)
+    cur = conn.cursor()
+    cur.execute("create table if not exists numbers (num integer)")
+    cur.execute("insert into numbers values (0)")
+    cur.execute("insert into numbers values (1)")
+    conn.commit()
+    cur.close()
+    conn.close()
 
-def main():
-    PostToDolphinTown()
+
+def GetTopTwoNumbersFromDatabase(db_name):
+    # TODO: Hey maybe make this a `with` block bud
+    conn = sqlite3.connect(db_name)
+    cur = conn.cursor()
+    cur.execute("select num from numbers order by num desc limit 2")
+    nums = [t[0] for t in cur.fetchall()]
+    if len(nums) != 2:
+        raise ValueError("WHY DID MORE THAN TWO NUMS COME BACK??? " + str(nums))
+    cur.close()
+    conn.close()
+    return sorted(nums)
+
+
+def AddNumberToDatabase(num, db_name):
+    # TODO: Hey maybe make this a `with` block bud
+    conn = sqlite3.connect(db_name)
+    cur = conn.cursor()
+    cur.execute("insert into numbers values (?)", (num,))
+    cur.close()
+    conn.commit()
+    conn.close()
+
+
+def PostNextFibo(db_name):
+    a, b = GetTopTwoNumbersFromDatabase(db_name)
+    c = Fibonacci(a, b)
+    text = NumToEeeee(c)
+    PostToDolphinTown(text)
+    AddNumberToDatabase(c, db_name)
+
+
+def PrintNextFibo(db_name):
+    a, b = GetTopTwoNumbersFromDatabase(db_name)
+    c = Fibonacci(a, b)
+    text = NumToEeeee(c)
+    AddNumberToDatabase(c, db_name)
+    print c, text
+
+
+def main(args):
+    if "new_db" in args:
+        CreateDatabaseAndKickStartSequence(args[1])
+    PostNextFibo(args[1])
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv)
