@@ -2,6 +2,8 @@
 import math
 import sqlite3
 
+from mastodon import Mastodon
+
 
 def Fibonacci(a, b):
     return a + b
@@ -16,19 +18,16 @@ def NumToEeeee(num):
     return NumToEeeee(num/2) + suffix
 
 
+def RegisterApp():
+    are_you_sure = raw_input("Type YES to continue registering app ")
+    if are_you_sure != "YES":
+        return
+    Mastodon.create_app('fibonacci_autoposter', scopes=['write'],
+        api_base_url="https://dolphin.town", to_file="fibo_autoposter.txt")
+
 
 def main():
-    a, b = 0, 1
-    c = Fibonacci(a, b)
-    s = NumToEeeee(c)
-    x = 3
-    while len(s) <= 500:
-        print x, '\t', c, '\t', s
-        a = b
-        b = c
-        c = Fibonacci(a, b)
-        s = NumToEeeee(c)
-        x += 1
+    RegisterApp()
 
 
 if __name__ == "__main__":
