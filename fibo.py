@@ -17,7 +17,7 @@ def NumToEeeee(num):
     suffix = 'e' if num % 2 == 0 else 'E'
     return NumToEeeee(num/2) + suffix
 
-"""
+'''
 def RegisterApp():
     """Populate ./fibo_autoposter.txt with creds identifying the autoposter."""
     are_you_sure = raw_input("Type YES to continue registering app ")
@@ -44,7 +44,7 @@ Then I copied the access token all on its own into 'fibo_usercred.txt'
 
 You can't see those in this git repo though, they're secret.
 I just SCP'ed them up to gawalt.com after cloning this repo there.
-"""
+'''
 
 def PostToDolphinTown(eeeee):
     mast = Mastodon(client_id="fibo_autoposter.txt",
