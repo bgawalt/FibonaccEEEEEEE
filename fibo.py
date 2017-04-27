@@ -1,3 +1,30 @@
+"""
+FibonaccEEEEEE: Fibonacci numbers from a dolphin.
+
+Set up your python environment with:
+
+    $ pip install Mastodon.py
+
+Execute this script with:
+
+    $ python fibo.py /path/to/sqlite3file.db \
+        /path/to/autoposter_creds.txt \
+        /path/to/user_creds.txt
+
+Generate those cred files with:
+    https://tinysubversions.com/notes/mastodon-bot/index.html
+And copy the client info into two consecutive lines of autoposter_creds.txt
+and the user cred access token into its own line of user_creds.txt
+
+If this is your first time running the poster, and you don't have a SQLite3
+file generated to track how many numbers you've posted, just tack on 'new_db'
+to the end of the arguments:
+
+    $ python fibo.py /path/to/sqlite3file.db \
+        /path/to/autoposter_creds.txt \
+        /path/to/user_creds.txt
+"""
+
 
 import math
 import sqlite3
@@ -47,9 +74,9 @@ You can't see those in this git repo though, they're secret.
 I just SCP'ed them up to gawalt.com after cloning this repo there.
 '''
 
-def PostToDolphinTown(eeeee):
-    mast = Mastodon(client_id="fibo_autoposter.txt",
-        access_token="fibo_usercred.txt",
+def PostToDolphinTown(eeeee, client_cred_filename, user_cred_filename):
+    mast = Mastodon(client_id=client_cred_filename,
+        access_token=user_cred_filename,
         api_base_url="https://dolphin.town")
     mast.toot(eeeee)
 
@@ -79,7 +106,7 @@ def GetTopTwoNumbersFromDatabase(db_name):
 
 
 def AddNumberToDatabase(num, db_name):
-    # TODO: Hey maybe make this a `with` block bud
+    # TODO: Hey maybe make this a `with` block, bud
     conn = sqlite3.connect(db_name)
     cur = conn.cursor()
     cur.execute("insert into numbers values (?)", (num,))
@@ -88,15 +115,16 @@ def AddNumberToDatabase(num, db_name):
     conn.close()
 
 
-def PostNextFibo(db_name):
+def PostNextFibo(db_name, client_cred_filename, user_cred_filename):
     a, b = GetTopTwoNumbersFromDatabase(db_name)
     c = Fibonacci(a, b)
     text = NumToEeeee(c)
-    PostToDolphinTown(text)
+    PostToDolphinTown(text, client_cred_filename, user_cred_filename)
     AddNumberToDatabase(c, db_name)
 
 
 def PrintNextFibo(db_name):
+    """I used this to test the db state storage without posting to Mastodon."""
     a, b = GetTopTwoNumbersFromDatabase(db_name)
     c = Fibonacci(a, b)
     text = NumToEeeee(c)
@@ -107,7 +135,7 @@ def PrintNextFibo(db_name):
 def main(args):
     if "new_db" in args:
         CreateDatabaseAndKickStartSequence(args[1])
-    PostNextFibo(args[1])
+    PostNextFibo(args[1], args[2], args[3])
 
 
 if __name__ == "__main__":
